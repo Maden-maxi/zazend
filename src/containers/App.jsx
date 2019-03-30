@@ -36,6 +36,7 @@ const AppWrapper = styled.div`
   opacity: 1 !important;
   position: relative;
   transition: opacity 0.5s;
+  padding-bottom: 84px;
 `;
 
 const MainPrivate = ({ isAuthenticated }) =>
