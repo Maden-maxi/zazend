@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import treeChanges from 'tree-changes';
 import { appColor } from 'modules/theme';
 
-import { getRepos, showAlert, switchMenu } from 'actions/index';
+import { getPosts, showAlert, switchMenu } from 'actions/index';
 import { STATUS } from 'constants/index';
 
 import { Link } from 'react-router-dom';
@@ -15,8 +15,6 @@ import {
   Button,
   Flex,
   Heading,
-  
-  Image,
   Paragraph,
   theme,
   utils,
@@ -26,7 +24,7 @@ import Loader from 'components/Loader';
 const { responsive, spacer } = utils;
 const { grays } = theme;
 
-const GitHubGrid = styled.ul`
+const PostsGrid = styled.ul`
   display: grid;
   grid-auto-flow: row;
   grid-gap: ${spacer(2)};
@@ -62,12 +60,17 @@ const GitHubGrid = styled.ul`
 
 const Item = styled(Link)`
   align-items: center;
-  border: solid 0.1rem ${appColor};
+  border: solid 0.2rem ${appColor};
   border-radius: 0.4rem;
   overflow: hidden;
   padding: ${spacer(3)};
   text-align: center;
   width: 100%;
+  transition: all .3s;
+  &:hover {
+    background: ${appColor};
+    color: #fff;
+  }
   /* stylelint-disable */
   ${/* istanbul ignore next */ p =>
     responsive({
@@ -98,68 +101,49 @@ const ItemHeader = styled.div`
   }
 `;
 
-export class GitHub extends React.Component {
-  state = {
-    query: 'react',
-  };
-
+export class Posts extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    github: PropTypes.object.isRequired,
+    posts: PropTypes.object.isRequired,
   };
 
   componentDidMount() {
-    const { query } = this.state;
     const { dispatch } = this.props;
 
-    dispatch(getRepos(query));
+    dispatch(getPosts());
   }
 
   componentWillReceiveProps(nextProps) {
     const { dispatch } = this.props;
     const { changedTo } = treeChanges(this.props, nextProps);
 
-    if (changedTo('github.repos.status', STATUS.ERROR)) {
-      dispatch(showAlert(nextProps.github.repos.message, { variant: 'danger' }));
+    if (changedTo('posts.posts.status', STATUS.ERROR)) {
+      dispatch(showAlert(nextProps.posts.posts.message, { variant: 'danger' }));
     }
   }
 
-  handleClick = e => {
-    const { query } = e.currentTarget.dataset;
-    const { dispatch } = this.props;
-
-    this.setState({
-      query,
-    });
-
-    dispatch(switchMenu(query));
-  };
-
   render() {
-    const { query } = this.state;
-    const { github } = this.props;
-    const data = github.repos.data || [];
+    const { posts } = this.props;
+    const data = posts.posts.data || [];
     let output;
 
-    if (github.repos.status === STATUS.READY) {
+    if (posts.posts.status === STATUS.READY) {
       if (data.length) {
         output = (
-          <GitHubGrid data-type={query} data-testid="GitHubGrid">
-            {github.repos.data.map(d => (
+          <PostsGrid data-testid="PostsGrid">
+            {posts.posts.data.map(d => (
               <li key={d.id}>
                 <Item to={'post/' + d.id}>
-                  {/* <Image src={d.owner.avatar_url} alt={d.owner.login} /> */}
                   <ItemHeader>
                     <Heading as="h5" lineHeight={1}>
                       {d.title}
                     </Heading>
-                    {/* <small>{d.owner.login}</small> */}
                   </ItemHeader>
                   <Paragraph>{d.body}</Paragraph>
                 </Item>
               </li>
             ))}
-          </GitHubGrid>
+          </PostsGrid>
         );
       } else {
         output = <h3>Nothing found</h3>;
@@ -169,29 +153,7 @@ export class GitHub extends React.Component {
     }
 
     return (
-      <div key="GitHub" data-testid="GitHubWrapper">
-        {/* <Flex justifyContent="center">
-          <ButtonGroup role="group" aria-label="GitHub Selector" data-testid="GitHubSelector">
-            <Button
-              animate={query === 'react' && github.repos.status === 'running'}
-              bordered={query !== 'react'}
-              size="lg"
-              data-query="react"
-              onClick={this.handleClick}
-            >
-              React
-            </Button>
-            <Button
-              animate={query === 'redux' && github.repos.status === 'running'}
-              bordered={query !== 'redux'}
-              size="lg"
-              data-query="redux"
-              onClick={this.handleClick}
-            >
-              Redux
-            </Button>
-          </ButtonGroup>
-        </Flex> */}
+      <div key="Posts" data-testid="PostsWrapper">
         {output}
       </div>
     );
@@ -200,7 +162,7 @@ export class GitHub extends React.Component {
 
 /* istanbul ignore next */
 function mapStateToProps(state) {
-  return { github: state.github };
+  return { posts: state.posts };
 }
 
-export default connect(mapStateToProps)(GitHub);
+export default connect(mapStateToProps)(Posts);

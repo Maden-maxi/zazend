@@ -5,7 +5,7 @@ import { parseError } from 'modules/client';
 import { ActionTypes, STATUS } from 'constants/index';
 
 export const githubState = {
-  repos: {
+  posts: {
     data: {},
     status: STATUS.IDLE,
     message: '',
@@ -14,13 +14,13 @@ export const githubState = {
 };
 
 export default {
-  github: handleActions(
+  posts: handleActions(
     {
-      [ActionTypes.GITHUB_GET_REPOS]: (state, { payload }) => {
-        const data = state.repos.data || [];
+      [ActionTypes.GET_POSTS]: (state, { payload }) => {
+        const data = state.posts.data || [];
 
         return immutable(state, {
-          repos: {
+          posts: {
             data: { $set: data },
             message: { $set: '' },
             query: { $set: payload.query },
@@ -28,16 +28,16 @@ export default {
           },
         });
       },
-      [ActionTypes.GITHUB_GET_REPOS_SUCCESS]: (state, { payload }) =>
+      [ActionTypes.GET_POSTS_SUCCESS]: (state, { payload }) =>
         immutable(state, {
-          repos: {
+          posts: {
             data: { $set: payload.data },
             status: { $set: STATUS.READY },
           },
         }),
-      [ActionTypes.GITHUB_GET_REPOS_FAILURE]: (state, { payload }) =>
+      [ActionTypes.GET_POSTS_FAILURE]: (state, { payload }) =>
         immutable(state, {
-          repos: {
+          posts: {
             message: { $set: parseError(payload.message) },
             status: { $set: STATUS.ERROR },
           },

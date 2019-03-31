@@ -1,34 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
 import treeChanges from 'tree-changes';
-import { appColor } from 'modules/theme';
+import styled from 'styled-components';
 
 import { getPostDetails, showAlert, switchMenu } from 'actions/index';
 import { STATUS } from 'constants/index';
 
-import { Link } from 'react-router-dom';
-
+import Loader from 'components/Loader';
+import { appColor } from 'modules/theme';
 import {
   ButtonGroup,
   Button,
   Flex,
   Heading,
-  Image,
   Paragraph,
   theme,
   utils,
 } from 'styled-minimal';
-import Loader from 'components/Loader';
+const { spacer } = utils;
 
-const Comment = ({props}) => (
-  <div>
-    <h3>{props.comment}</h3>
-    <h4>{props.comment}</h4>
-    <p>{props.comment}</p>
-  </div>
-);
+const PostWrapper = styled.div`
+  .comment {
+    margin-bottom: ${spacer(3)};
+    border-radius: 0.2rem;
+    border: solid 0.2rem ${appColor};
+  }
+  .comment, .post-body {
+    padding: ${spacer(3)};
+  }
+`;
 
 export class PostDetails extends React.Component {
     static propTypes = {
@@ -57,18 +58,23 @@ export class PostDetails extends React.Component {
       if (postDetails.details.status === STATUS.READY) {
         const {details, comments, user} = data;
         output = (
-          <div>
-            <h1>{details.title}</h1>
-            <h3>Author: {user.username}</h3>
-            <p>{details.body}</p>
-            <div className="comments">{comments.map(c => (
-              <div key={c.id}>
-                <h3>{c.name}</h3>
+          <PostWrapper>
+            <h1 className="text-primary">{details.title}</h1>
+            <h2>Author: <i className="text-primary">{user.username}</i></h2>
+
+            <p className="post-body text-white bg-primary">{details.body}</p>
+
+            <h3>Comments: </h3>
+            <div className="comments">
+            {comments.map(c => (
+              <div class="comment bg-primary" key={c.id}>
+                <h3 className="text-white text-primary">{c.name}</h3>
                 <h4>{c.email}</h4>
                 <p>{c.body}</p>
               </div>
-            ))}</div>
-          </div>
+            ))}
+            </div>
+          </PostWrapper>
         );
       } else {
         output = <Loader block />;

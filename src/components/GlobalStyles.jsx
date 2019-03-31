@@ -49,6 +49,15 @@ const GlobalStyle = createGlobalStyle`
     line-height: 1;
     padding: 0;
   }
+  .text-primary {
+    color: ${appColor};
+  }
+  .text-white {
+    color: #fff;
+  }
+  .bg-primary {
+    background-color: ${appColor};
+  }
 `;
 
 export default () => <GlobalStyle />;

@@ -1,11 +1,11 @@
 import app from './app';
-import github from './github';
+import posts from './posts';
 import user from './user';
 import postDetails from './postDetails';
 
 export default {
   ...app,
-  ...github,
+  ...posts,
   ...user,
   ...postDetails
 };

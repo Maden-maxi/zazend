@@ -4,7 +4,6 @@
  */
 
 import { all, call, put, takeLatest } from 'redux-saga/effects';
-import { request } from 'modules/client';
 import axios from 'axios';
 
 import { ActionTypes } from 'constants/index';
@@ -15,7 +14,7 @@ import { ActionTypes } from 'constants/index';
  * @param {Object} action
  *
  */
-export function* getRepos({ payload }) {
+export function* getPosts({ payload }) {
   try {
     const response = yield call(
       axios,
@@ -23,13 +22,13 @@ export function* getRepos({ payload }) {
     );
     console.log(response);
     yield put({
-      type: ActionTypes.GITHUB_GET_REPOS_SUCCESS,
+      type: ActionTypes.GET_POSTS_SUCCESS,
       payload: response,
     });
   } catch (err) {
     /* istanbul ignore next */
     yield put({
-      type: ActionTypes.GITHUB_GET_REPOS_FAILURE,
+      type: ActionTypes.GET_POSTS_FAILURE,
       payload: err,
     });
   }
@@ -39,5 +38,5 @@ export function* getRepos({ payload }) {
  * GitHub Sagas
  */
 export default function* root() {
-  yield all([takeLatest(ActionTypes.GITHUB_GET_REPOS, getRepos)]);
+  yield all([takeLatest(ActionTypes.GET_POSTS, getPosts)]);
 }

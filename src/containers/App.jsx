@@ -15,7 +15,6 @@ import config from 'config';
 import { showAlert } from 'actions/index';
 
 import Home from 'routes/Home';
-import Private from 'routes/Private';
 import Contact from 'routes/Contact';
 import About from 'routes/About';
 import Post from 'routes/Post';
@@ -90,7 +89,7 @@ export class App extends React.Component {
                   isAuthenticated={user.isAuthenticated}
                   path="/"
                   exact
-                  component={Private}
+                  component={Home}
                 />
                 <RoutePublic
                   isAuthenticated={false}
@@ -109,11 +108,6 @@ export class App extends React.Component {
                   path="/post/:id"
                   exact
                   component={Post}
-                />
-                <RoutePrivate
-                  isAuthenticated={user.isAuthenticated}
-                  path="/private"
-                  component={Private}
                 />
                 <Route component={NotFound} />
               </Switch>
